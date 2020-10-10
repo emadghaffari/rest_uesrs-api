@@ -26,3 +26,12 @@ func HandlerNotFoundError(message string) *ResError {
 		Error:   "not_found",
 	}
 }
+
+// HandlerInternalServerError func for ResError struct
+func HandlerInternalServerError(message string) *ResError {
+	return &ResError{
+		Message: message,
+		Status:  http.StatusInternalServerError,
+		Error:   "internal_server_error",
+	}
+}
