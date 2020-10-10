@@ -3,37 +3,70 @@ package users
 // data access object
 
 import (
-	"fmt"
-
+	"github.com/emadghaffari/bookstore_uesrs-api/datasources/mysql/userdb"
+	"github.com/emadghaffari/bookstore_uesrs-api/utils/date"
 	"github.com/emadghaffari/bookstore_uesrs-api/utils/errors"
+	"github.com/emadghaffari/bookstore_uesrs-api/utils/mysql"
 )
 
-var userDB = make(map[int64]*User)
+const (
+	indexUniqueEmail = "email_UNIQUE"
+	insertQyery      = "INSERT INTO users(first_name, last_name, email, created_at) VALUES(?, ?, ?, ?);"
+	selectQuery      = "SELECT id, first_name, last_name, email, created_at FROM users WHERE id=?"
+	updateQuery 	 = "UPDATE users SET first_name=?, last_name=?, email=? WHERE id=?"
+)
 
 // Get a user if exists in DB
 func (user *User) Get() *errors.ResError {
-	result := userDB[user.ID]
-	if result == nil {
-		return errors.HandlerNotFoundError(fmt.Sprintf("the user %d not fount", user.ID))
+	stms, err := userdb.Client.Prepare(selectQuery)
+	if err != nil {
+		return mysql.ParseError(err)
 	}
+	defer stms.Close()
+	result := stms.QueryRow(user.ID)
 
-	user.ID = result.ID
-	user.FirstName = result.FirstName
-	user.LastName = result.LastName
-	user.Email = result.Email
-	user.CreatedAt = result.CreatedAt
+	if err := result.Scan(
+		&user.ID,
+		&user.FirstName,
+		&user.LastName,
+		&user.Email,
+		&user.CreatedAt,
+	); err != nil {
+		return mysql.ParseError(err)
+	}
 
 	return nil
 }
 
 // Save a user if not exists in DB
 func (user *User) Save() *errors.ResError {
-	if result := userDB[user.ID]; result != nil {
-		if result.Email == user.Email {
-			return errors.HandlerBagRequest(fmt.Sprintf("the email:%s already registerd", user.Email))
-		}
-		return errors.HandlerBagRequest(fmt.Sprintf("the user with this ID:%d exists in database", user.ID))
+	stms, err := userdb.Client.Prepare(insertQyery)
+	if err != nil {
+		return errors.HandlerInternalServerError(err.Error())
 	}
-	userDB[user.ID] = user
+	defer stms.Close()
+
+	result, err := stms.Exec(user.FirstName, user.LastName, user.Email, date.GetNowString())
+	if err != nil {
+		return mysql.ParseError(err)
+	}
+	user.ID, err = result.LastInsertId()
+	if err != nil {
+		return mysql.ParseError(err)
+	}
+	return nil
+}
+
+// Update func try to access data and update user
+func (user *User) Update() *errors.ResError {
+	stms, err := userdb.Client.Prepare(updateQuery)
+	if err != nil {
+		return errors.HandlerInternalServerError(err.Error())
+	}
+	defer stms.Close()
+	_, err = stms.Exec(user.FirstName, user.LastName, user.Email, user.ID)
+	if err != nil {
+		return mysql.ParseError(err)
+	}
 	return nil
 }

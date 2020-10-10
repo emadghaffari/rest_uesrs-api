@@ -51,7 +51,33 @@ func CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, result)
 }
 
-// FindUser func for find the user we wants
-func FindUser(c *gin.Context) {
-	c.String(http.StatusNotImplemented, "Implement ME!")
+// UpdateUser func
+func UpdateUser(c *gin.Context)  {
+	// create a variable from user struct
+	userID, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+	if err != nil {
+		resErr := errors.HandlerBagRequest("Invalid, ID should be a Number")
+		c.JSON(resErr.Status, resErr)
+		return
+	}
+
+	// create a variable from user struct
+	user := users.User{}
+	user.ID = userID
+
+	// Bind the request.Body to user
+	if err := c.ShouldBindJSON(&user); err != nil {
+		resErr := errors.HandlerBagRequest("Invalid JSON Body.")
+		c.JSON(resErr.Status, resErr)
+		return
+	}
+
+	// tru to update a single user
+	result, resErr := services.UpdateUser(user)
+	if resErr != nil {
+		c.JSON(resErr.Status, resErr)
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
 }
