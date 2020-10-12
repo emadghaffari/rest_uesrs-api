@@ -14,7 +14,12 @@ type User struct {
 	LastName  string `json:"last_name"`
 	Email     string `json:"email"`
 	CreatedAt string `json:"created_at"`
+	Status    string `json:"status"`
+	Password  string `json:"password"`
 }
+
+// Users list
+type Users []User
 
 // Validate Email for user
 func (user *User) Validate() *errors.ResError {
@@ -22,6 +27,11 @@ func (user *User) Validate() *errors.ResError {
 	user.LastName = strings.TrimSpace(user.LastName)
 	if user.Email = strings.TrimSpace(strings.ToLower(user.Email)); user.Email == "" {
 		return errors.HandlerBagRequest("Invalid Email Address")
+	}
+
+	user.Password = strings.TrimSpace(user.Password)
+	if user.Password == "" {
+		return errors.HandlerBagRequest("Invalid Password")
 	}
 
 	return nil

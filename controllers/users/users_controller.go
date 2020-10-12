@@ -6,17 +6,25 @@ import (
 
 	"github.com/emadghaffari/bookstore_uesrs-api/domain/users"
 	"github.com/emadghaffari/bookstore_uesrs-api/services"
+	cryptoutils "github.com/emadghaffari/bookstore_uesrs-api/utils/cryptoUtils"
 	"github.com/emadghaffari/bookstore_uesrs-api/utils/errors"
 	"github.com/gin-gonic/gin"
 )
 
-// GetUser func for get a users
-func GetUser(c *gin.Context) {
-	// create a variable from user struct
-	userID, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+func getUserID(ID string) (int64, *errors.ResError) {
+	userID, err := strconv.ParseInt(ID, 10, 64)
 	if err != nil {
-		resErr := errors.HandlerBagRequest("Invalid, ID should be a Number")
-		c.JSON(resErr.Status, resErr)
+		return 0, errors.HandlerBagRequest("Invalid, ID should be a Number")
+	}
+	return userID, nil
+}
+
+// Get func for get a users
+func Get(c *gin.Context) {
+	// get user_id
+	userID, err := getUserID(c.Param("user_id"))
+	if err != nil {
+		c.JSON(err.Status, err)
 		return
 	}
 
@@ -26,11 +34,11 @@ func GetUser(c *gin.Context) {
 		c.JSON(resErr.Status, resErr)
 		return
 	}
-	c.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, result.Marshall((c.GetHeader("X-Public") == "true")))
 }
 
-// CreateUser func for store new user
-func CreateUser(c *gin.Context) {
+// Create func for store new user
+func Create(c *gin.Context) {
 	// create a variable from user struct
 	user := users.User{}
 
@@ -41,6 +49,7 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
+	user.Password = cryptoutils.GetMD5(user.Password)
 	// create a new User Domain(Core of project) and return response
 	result, resErr := services.CreateUser(user)
 	if resErr != nil {
@@ -48,16 +57,15 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, result)
+	c.JSON(http.StatusCreated, result.Marshall((c.GetHeader("X-Public") == "true")))
 }
 
-// UpdateUser func
-func UpdateUser(c *gin.Context)  {
+// Update func
+func Update(c *gin.Context) {
 	// create a variable from user struct
-	userID, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+	userID, err := getUserID(c.Param("user_id"))
 	if err != nil {
-		resErr := errors.HandlerBagRequest("Invalid, ID should be a Number")
-		c.JSON(resErr.Status, resErr)
+		c.JSON(err.Status, err)
 		return
 	}
 
@@ -79,5 +87,31 @@ func UpdateUser(c *gin.Context)  {
 		return
 	}
 
-	c.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, result.Marshall((c.GetHeader("X-Public") == "true")))
+}
+
+// Delete func
+func Delete(c *gin.Context) {
+	userID, err := getUserID(c.Param("user_id"))
+	if err != nil {
+		c.JSON(err.Status, err)
+		return
+	}
+
+	if err := services.DeleteUser(userID); err != nil {
+		c.JSON(err.Status, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]string{"status": "deleted"})
+}
+
+// Status func
+func Status(c *gin.Context) {
+	result, err := services.GetByStatus(c.Param("status"))
+	if err != nil {
+		c.JSON(err.Status, err)
+		return
+	}
+	c.JSON(http.StatusOK, result.Marshall(c.GetHeader("X-Public") == "true"))
 }
