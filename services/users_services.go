@@ -5,17 +5,6 @@ import (
 	"github.com/emadghaffari/bookstore_uesrs-api/utils/errors"
 )
 
-var UserService userServiceInterface = &userService{}
-
-type userService struct{}
-type userServiceInterface interface {
-	CreateUser(users.User) (*users.User, *errors.ResError)
-	GetUser(int64) (*users.User, *errors.ResError)
-	UpdateUser(users.User) (*users.User, *errors.ResError)
-	DeleteUser(int64) *errors.ResError
-	GetByStatus(string) (users.Users, *errors.ResError)
-}
-
 // CreateUser func in services -> validate then create a new user
 func CreateUser(user users.User) (*users.User, *errors.ResError) {
 	if err := user.Validate(); err != nil {
