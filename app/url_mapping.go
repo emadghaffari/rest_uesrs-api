@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/emadghaffari/bookstore_uesrs-api/controllers/ping"
-	"github.com/emadghaffari/bookstore_uesrs-api/controllers/users"
+	"github.com/emadghaffari/rest_uesrs-api/controllers/ping"
+	"github.com/emadghaffari/rest_uesrs-api/controllers/users"
 )
 
 func mapURL() {

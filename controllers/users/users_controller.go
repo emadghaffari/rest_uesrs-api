@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/emadghaffari/bookstore_uesrs-api/domain/users"
-	"github.com/emadghaffari/bookstore_uesrs-api/services"
-	cryptoutils "github.com/emadghaffari/bookstore_uesrs-api/utils/cryptoUtils"
-	"github.com/emadghaffari/bookstore_uesrs-api/utils/errors"
+	"github.com/emadghaffari/rest_uesrs-api/domain/users"
+	"github.com/emadghaffari/rest_uesrs-api/services"
+	cryptoutils "github.com/emadghaffari/rest_uesrs-api/utils/cryptoUtils"
+	"github.com/emadghaffari/rest_uesrs-api/utils/errors"
 	"github.com/gin-gonic/gin"
 )
 

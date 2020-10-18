@@ -5,10 +5,10 @@ package users
 import (
 	"fmt"
 
-	"github.com/emadghaffari/bookstore_uesrs-api/datasources/mysql/userdb"
-	"github.com/emadghaffari/bookstore_uesrs-api/utils/date"
-	"github.com/emadghaffari/bookstore_uesrs-api/utils/errors"
-	"github.com/emadghaffari/bookstore_uesrs-api/utils/mysql"
+	"github.com/emadghaffari/rest_uesrs-api/datasources/mysql/userdb"
+	"github.com/emadghaffari/rest_uesrs-api/utils/date"
+	"github.com/emadghaffari/rest_uesrs-api/utils/errors"
+	"github.com/emadghaffari/rest_uesrs-api/utils/mysql"
 )
 
 const (

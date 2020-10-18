@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/emadghaffari/bookstore_uesrs-api/logger"
+	"github.com/emadghaffari/rest_uesrs-api/logger"
 	"github.com/gin-gonic/gin"
 )
 

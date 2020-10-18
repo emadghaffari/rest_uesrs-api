@@ -1,8 +1,8 @@
 package services
 
 import (
-	"github.com/emadghaffari/bookstore_uesrs-api/domain/users"
-	"github.com/emadghaffari/bookstore_uesrs-api/utils/errors"
+	"github.com/emadghaffari/rest_uesrs-api/domain/users"
+	"github.com/emadghaffari/rest_uesrs-api/utils/errors"
 )
 
 // CreateUser func in services -> validate then create a new user

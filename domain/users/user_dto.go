@@ -4,7 +4,7 @@ package users
 import (
 	"strings"
 
-	"github.com/emadghaffari/bookstore_uesrs-api/utils/errors"
+	"github.com/emadghaffari/rest_uesrs-api/utils/errors"
 )
 
 // User struct
