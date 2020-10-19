@@ -14,7 +14,7 @@ import (
 func getUserID(ID string) (int64, *errors.ResError) {
 	userID, err := strconv.ParseInt(ID, 10, 64)
 	if err != nil {
-		return 0, errors.HandlerBagRequest("Invalid, ID should be a Number")
+		return 0, errors.HandlerBadRequest("Invalid, ID should be a Number")
 	}
 	return userID, nil
 }
@@ -44,7 +44,7 @@ func Create(c *gin.Context) {
 
 	// Bind the request.Body to user
 	if err := c.ShouldBindJSON(&user); err != nil {
-		resErr := errors.HandlerBagRequest("Invalid JSON Body.")
+		resErr := errors.HandlerBadRequest("Invalid JSON Body.")
 		c.JSON(resErr.Status, resErr)
 		return
 	}
@@ -75,7 +75,7 @@ func Update(c *gin.Context) {
 
 	// Bind the request.Body to user
 	if err := c.ShouldBindJSON(&user); err != nil {
-		resErr := errors.HandlerBagRequest("Invalid JSON Body.")
+		resErr := errors.HandlerBadRequest("Invalid JSON Body.")
 		c.JSON(resErr.Status, resErr)
 		return
 	}

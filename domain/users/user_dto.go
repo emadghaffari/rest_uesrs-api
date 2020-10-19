@@ -26,12 +26,12 @@ func (user *User) Validate() *errors.ResError {
 	user.FirstName = strings.TrimSpace(user.FirstName)
 	user.LastName = strings.TrimSpace(user.LastName)
 	if user.Email = strings.TrimSpace(strings.ToLower(user.Email)); user.Email == "" {
-		return errors.HandlerBagRequest("Invalid Email Address")
+		return errors.HandlerBadRequest("Invalid Email Address")
 	}
 
 	user.Password = strings.TrimSpace(user.Password)
 	if user.Password == "" {
-		return errors.HandlerBagRequest("Invalid Password")
+		return errors.HandlerBadRequest("Invalid Password")
 	}
 
 	return nil

@@ -9,8 +9,8 @@ type ResError struct {
 	Error   string `json:"error"`
 }
 
-// HandlerBagRequest func for ResError struct
-func HandlerBagRequest(message string) *ResError {
+// HandlerBadRequest func for ResError struct
+func HandlerBadRequest(message string) *ResError {
 	return &ResError{
 		Message: message,
 		Status:  http.StatusBadRequest,
