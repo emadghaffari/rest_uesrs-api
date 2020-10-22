@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/emadghaffari/rest_uesrs-api/logger"
+	"github.com/emadghaffari/res_errors/logger"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,6 +12,6 @@ var (
 // StartApplication func
 func StartApplication() {
 	mapURL()
-	logger.Log.Info("about to start application")
+	logger.Info("about to start application")
 	router.Run(":8080")
 }

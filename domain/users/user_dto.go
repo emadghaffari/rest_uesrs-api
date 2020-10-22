@@ -4,7 +4,7 @@ package users
 import (
 	"strings"
 
-	"github.com/emadghaffari/rest_uesrs-api/utils/errors"
+	"github.com/emadghaffari/res_errors/errors"
 )
 
 // User struct
@@ -22,7 +22,7 @@ type User struct {
 type Users []User
 
 // Validate Email for user
-func (user *User) Validate() *errors.ResError {
+func (user *User) Validate() errors.ResError {
 	user.FirstName = strings.TrimSpace(user.FirstName)
 	user.LastName = strings.TrimSpace(user.LastName)
 	if user.Email = strings.TrimSpace(strings.ToLower(user.Email)); user.Email == "" {

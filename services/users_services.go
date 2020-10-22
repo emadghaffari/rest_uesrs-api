@@ -1,12 +1,12 @@
 package services
 
 import (
+	"github.com/emadghaffari/res_errors/errors"
 	"github.com/emadghaffari/rest_uesrs-api/domain/users"
-	"github.com/emadghaffari/rest_uesrs-api/utils/errors"
 )
 
 // CreateUser func in services -> validate then create a new user
-func CreateUser(user users.User) (*users.User, *errors.ResError) {
+func CreateUser(user users.User) (*users.User, errors.ResError) {
 	if err := user.Validate(); err != nil {
 		return nil, err
 
@@ -19,7 +19,7 @@ func CreateUser(user users.User) (*users.User, *errors.ResError) {
 }
 
 // GetUser func in services -> validate then create a new user
-func GetUser(userID int64) (*users.User, *errors.ResError) {
+func GetUser(userID int64) (*users.User, errors.ResError) {
 	user := &users.User{ID: userID}
 	if err := user.Get(); err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ func GetUser(userID int64) (*users.User, *errors.ResError) {
 }
 
 // UpdateUser single user and connect to domain
-func UpdateUser(user users.User) (*users.User, *errors.ResError) {
+func UpdateUser(user users.User) (*users.User, errors.ResError) {
 	current, err := GetUser(user.ID)
 	if err != nil {
 		return nil, err
@@ -52,7 +52,7 @@ func UpdateUser(user users.User) (*users.User, *errors.ResError) {
 }
 
 // DeleteUser user
-func DeleteUser(userID int64) *errors.ResError {
+func DeleteUser(userID int64) errors.ResError {
 	user := &users.User{ID: userID}
 	if err := user.Delete(); err != nil {
 		return err
@@ -61,7 +61,7 @@ func DeleteUser(userID int64) *errors.ResError {
 }
 
 // GetByStatus func
-func GetByStatus(status string) (users.Users, *errors.ResError) {
+func GetByStatus(status string) (users.Users, errors.ResError) {
 	user := &users.User{Status: status}
 	res, err := user.FindByStatus(user.Status)
 	if err != nil {

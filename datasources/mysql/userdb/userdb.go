@@ -6,7 +6,8 @@ import (
 	"log"
 
 	// mysql package for connection to mysqlDB
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/emadghaffari/res_errors/logger"
+	"github.com/go-sql-driver/mysql"
 )
 
 var (
@@ -29,6 +30,6 @@ func init() {
 	if err = Client.Ping(); err != nil {
 		panic(err)
 	}
-
+	mysql.SetLogger(logger.GetLogger())
 	log.Println("database successfuly confiqured.")
 }

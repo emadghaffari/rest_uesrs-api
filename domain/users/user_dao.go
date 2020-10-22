@@ -5,9 +5,10 @@ package users
 import (
 	"fmt"
 
+	"github.com/emadghaffari/res_errors/errors"
+	"github.com/emadghaffari/res_errors/logger"
 	"github.com/emadghaffari/rest_uesrs-api/datasources/mysql/userdb"
 	"github.com/emadghaffari/rest_uesrs-api/utils/date"
-	"github.com/emadghaffari/rest_uesrs-api/utils/errors"
 	"github.com/emadghaffari/rest_uesrs-api/utils/mysql"
 )
 
@@ -21,9 +22,10 @@ const (
 )
 
 // Get a user if exists in DB
-func (user *User) Get() *errors.ResError {
+func (user *User) Get() errors.ResError {
 	stms, err := userdb.Client.Prepare(selectQuery)
 	if err != nil {
+		logger.Error("Error", err)
 		return mysql.ParseError(err)
 	}
 	defer stms.Close()
@@ -36,6 +38,8 @@ func (user *User) Get() *errors.ResError {
 		&user.Email,
 		&user.CreatedAt,
 	); err != nil {
+		logger.Error("Error", err)
+
 		return mysql.ParseError(err)
 	}
 
@@ -43,10 +47,12 @@ func (user *User) Get() *errors.ResError {
 }
 
 // Save a user if not exists in DB
-func (user *User) Save() *errors.ResError {
+func (user *User) Save() errors.ResError {
 	stms, err := userdb.Client.Prepare(insertQyery)
 	if err != nil {
-		return errors.HandlerInternalServerError(err.Error())
+		logger.Error("Error", err)
+
+		return errors.HandlerInternalServerError(err.Error(), err)
 	}
 	defer stms.Close()
 
@@ -62,10 +68,12 @@ func (user *User) Save() *errors.ResError {
 }
 
 // Update func try to access data and update user
-func (user *User) Update() *errors.ResError {
+func (user *User) Update() errors.ResError {
 	stms, err := userdb.Client.Prepare(updateQuery)
 	if err != nil {
-		return errors.HandlerInternalServerError(err.Error())
+		logger.Error("Error", err)
+
+		return errors.HandlerInternalServerError(err.Error(), err)
 	}
 	defer stms.Close()
 	_, err = stms.Exec(user.FirstName, user.LastName, user.Email, user.ID)
@@ -76,7 +84,7 @@ func (user *User) Update() *errors.ResError {
 }
 
 // Delete meth
-func (user *User) Delete() *errors.ResError {
+func (user *User) Delete() errors.ResError {
 	stms, err := userdb.Client.Prepare(deleteQuery)
 	if err != nil {
 		return mysql.ParseError(err)
@@ -91,23 +99,23 @@ func (user *User) Delete() *errors.ResError {
 }
 
 // FindByStatus func
-func (user *User) FindByStatus(status string) ([]User, *errors.ResError) {
+func (user *User) FindByStatus(status string) ([]User, errors.ResError) {
 	stms, err := userdb.Client.Prepare(findUsersByStatusQuery)
 	if err != nil {
-		return nil, errors.HandlerInternalServerError(fmt.Sprintf("Error in Prepare %s", err.Error()))
+		return nil, errors.HandlerInternalServerError(fmt.Sprintf("Error in Prepare %s", err.Error()), err)
 	}
 	defer stms.Close()
 
 	row, err := stms.Query(status)
 	if err != nil {
-		return nil, errors.HandlerInternalServerError(fmt.Sprintf("Error in Query %s", err.Error()))
+		return nil, errors.HandlerInternalServerError(fmt.Sprintf("Error in Query %s", err.Error()), err)
 	}
 	defer row.Close()
 	result := make([]User, 0)
 	for row.Next() {
 		var ur User
 		if err := row.Scan(&ur.ID, &ur.Status, &ur.FirstName, &ur.LastName, &ur.Email, &ur.CreatedAt); err != nil {
-			return nil, errors.HandlerInternalServerError(fmt.Sprintf("Error in Scan %s", err.Error()))
+			return nil, errors.HandlerInternalServerError(fmt.Sprintf("Error in Scan %s", err.Error()), err)
 		}
 		result = append(result, ur)
 	}
